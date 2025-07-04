@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.JComboBox;
 import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
@@ -33,7 +34,9 @@ public class MainFrame extends JFrame {
     private List<Reservation> reservations;
     private JTable table;
     private DefaultTableModel tableModel;
-    private JTextField nameField, dateField, timeField, personsField, tableNumberField;
+    private JTextField nameField;
+    private javax.swing.JComboBox<String> dateCombo, timeCombo;
+    private javax.swing.JComboBox<Integer> personsCombo, tableNumberCombo;
     private JButton addButton, deleteButton;
 
     public MainFrame(ReservationService service) {
@@ -58,13 +61,30 @@ public class MainFrame extends JFrame {
 
         // Formularfelder
         nameField = new JTextField();
-        dateField = new JTextField();
-        timeField = new JTextField();
-        personsField = new JTextField();
-        tableNumberField = new JTextField();
-        // Hinweis-Texte (Tooltips) für Datum und Zeit
-        dateField.setToolTipText("Format: YYYY-MM-DD");
-        timeField.setToolTipText("Format: HH:MM (24h)");
+
+        dateCombo = new JComboBox<>();
+        for (int i = 0; i < 14; i++) {
+            LocalDate d = LocalDate.now().plusDays(i);
+            dateCombo.addItem(d.format(DateTimeFormatter.ISO_LOCAL_DATE));
+        }
+
+        timeCombo = new JComboBox<>();
+        LocalTime startTime = LocalTime.of(10, 0);
+        for (int i = 0; i <= 24; i++) {
+            LocalTime t = startTime.plusMinutes(i * 30L);
+            if (t.isAfter(LocalTime.of(22, 0))) break;
+            timeCombo.addItem(t.format(DateTimeFormatter.ofPattern("HH:mm")));
+        }
+
+        personsCombo = new JComboBox<>();
+        for (int i = 1; i <= 10; i++) {
+            personsCombo.addItem(i);
+        }
+
+        tableNumberCombo = new JComboBox<>();
+        for (int i = 1; i <= 20; i++) {
+            tableNumberCombo.addItem(i);
+        }
 
         // Labels für die Formularfelder
         JLabel nameLabel = new JLabel("Name:");
@@ -83,13 +103,13 @@ public class MainFrame extends JFrame {
         formPanel.add(nameLabel);
         formPanel.add(nameField);
         formPanel.add(dateLabel);
-        formPanel.add(dateField);
+        formPanel.add(dateCombo);
         formPanel.add(timeLabel);
-        formPanel.add(timeField);
+        formPanel.add(timeCombo);
         formPanel.add(personsLabel);
-        formPanel.add(personsField);
+        formPanel.add(personsCombo);
         formPanel.add(tableLabel);
-        formPanel.add(tableNumberField);
+        formPanel.add(tableNumberCombo);
 
         // Buttons
         addButton = new JButton("Hinzufügen");
@@ -114,30 +134,18 @@ public class MainFrame extends JFrame {
         // ActionListener für "Hinzufügen"
         addButton.addActionListener(e -> {
             String name = nameField.getText().trim();
-            String date = dateField.getText().trim();
-            String time = timeField.getText().trim();
-            String personsText = personsField.getText().trim();
-            String tableText = tableNumberField.getText().trim();
-            if (name.isEmpty() || date.isEmpty() || time.isEmpty() || personsText.isEmpty() || tableText.isEmpty()) {
+            String date = (String) dateCombo.getSelectedItem();
+            String time = (String) timeCombo.getSelectedItem();
+            Integer personsVal = (Integer) personsCombo.getSelectedItem();
+            Integer tableVal = (Integer) tableNumberCombo.getSelectedItem();
+            if (name.isEmpty() || date == null || time == null || personsVal == null || tableVal == null) {
                 JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen.", "Eingabe fehlerhaft", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            int persons;
-            int tableNum;
-            try {
-                persons = Integer.parseInt(personsText);
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Bitte eine gültige Zahl für Personen eingeben.", "Eingabe fehlerhaft", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+            int persons = personsVal;
+            int tableNum = tableVal;
             if (persons <= 0) {
                 JOptionPane.showMessageDialog(this, "Die Personenanzahl muss größer als 0 sein.", "Eingabe fehlerhaft", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            try {
-                tableNum = Integer.parseInt(tableText);
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Bitte eine gültige Zahl für Tisch-Nr eingeben.", "Eingabe fehlerhaft", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             if (tableNum <= 0) {
@@ -163,10 +171,10 @@ public class MainFrame extends JFrame {
                 refreshTable();
                 // Eingabefelder leeren und Fokus zurück auf Name
                 nameField.setText("");
-                dateField.setText("");
-                timeField.setText("");
-                personsField.setText("");
-                tableNumberField.setText("");
+                dateCombo.setSelectedIndex(0);
+                timeCombo.setSelectedIndex(0);
+                personsCombo.setSelectedIndex(0);
+                tableNumberCombo.setSelectedIndex(0);
                 nameField.requestFocus();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
