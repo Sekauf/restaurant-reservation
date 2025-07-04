@@ -5,7 +5,7 @@ Dieses Projekt implementiert ein einfaches **Restaurant-Reservierungssystem** al
 ## Aufbau und Funktionsumfang
 
 - **GUI (Swing):** Ermöglicht das Anlegen neuer Reservierungen über ein Formular (Name des Gasts, Datum, Uhrzeit, Personenzahl, Tisch-Nr) sowie das Auflisten aller vorhandenen Reservierungen in einer Tabelle. Eine ausgewählte Reservierung kann per Knopfdruck wieder gelöscht werden.
-- **Datenbank (SQLite):** Die Reservierungen werden in der Datei `db/restaurant.db` gespeichert. Beim ersten Start der Anwendung wird die benötigte Tabelle automatisch angelegt. Alle Reservierungsdaten bleiben zwischen Programmstarts erhalten.
+- **Datenbank (SQLite):** Die Reservierungen werden in der Datei `db/restaurant.db` gespeichert. Beim ersten Start der Anwendung wird die benötigte Tabelle automatisch angelegt. Fehlt der Ordner `db`, wird er ebenfalls erzeugt, sodass alle Reservierungsdaten zwischen Programmstarts erhalten bleiben.
 - **Verhindern von Doppelbuchungen:** Das System prüft beim Anlegen einer Reservierung, ob für die Kombination aus Tisch-Nr und Datum/Uhrzeit bereits eine Reservierung existiert, und verhindert ggf. doppelte Einträge.
 
 ## Projektstruktur

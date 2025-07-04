@@ -3,6 +3,7 @@ package com.restaurant.reservation.dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.io.File;
 
 /**
  * Hilfsklasse für die Verwaltung der Datenbankverbindung zur SQLite-DB.
@@ -25,6 +26,11 @@ public class Database {
      * @throws SQLException bei Verbindungsfehlern
      */
     public static Connection getConnection() throws SQLException {
+        // Ensure the directory for the database file exists
+        File dbDir = new File("db");
+        if (!dbDir.exists()) {
+            dbDir.mkdirs();
+        }
         return DriverManager.getConnection(DB_URL);
     }
 }
