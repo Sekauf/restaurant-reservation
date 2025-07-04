@@ -67,4 +67,21 @@ public class ReservationService {
             throw new Exception("Datenbankfehler beim Löschen der Reservierung.", e);
         }
     }
+
+    /**
+     * Prüft, ob ein Tisch für den angegebenen Zeitpunkt bereits reserviert ist.
+     * @param date Datum (YYYY-MM-DD)
+     * @param time Uhrzeit (HH:MM)
+     * @param tableNumber Tisch-Nr
+     * @return true, wenn bereits eine Reservierung existiert
+     * @throws Exception bei Datenbankfehlern
+     */
+    public boolean isTableReserved(String date, String time, int tableNumber) throws Exception {
+        try {
+            return dao.existsReservation(date, time, tableNumber);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new Exception("Datenbankfehler beim Prüfen der Reservierung.", e);
+        }
+    }
 }
