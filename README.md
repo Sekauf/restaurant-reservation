@@ -16,8 +16,6 @@ Das Projekt folgt einer Schichtentrennung nach MVC:
 - `com.restaurant.reservation.service` – Geschäftslogik-Schicht (**Service**), die Prüfungen vornimmt (z.B. Doppelbuchungen) und DAO-Aufrufe kapselt.
 - `com.restaurant.reservation.ui` – Präsentationsschicht (**Swing UI**); enthält das Hauptfenster, Dialoge und den Programmstart.
 
-Zusätzlich enthält der Ordner `docs` bereitgestellte Dokumente (z.B. Projektbeschreibung, GUI-Entwurf), die das Projekt begleiten.
-
 ## Nutzung
 
 1. **Voraussetzungen:** Installiertes JDK 17 und Maven. Optional kann das Projekt in einer IDE (z.B. IntelliJ IDEA) geöffnet werden.
