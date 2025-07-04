@@ -1,6 +1,7 @@
 package com.restaurant.reservation.ui;
 
 import com.restaurant.reservation.dao.ReservationDAO;
+import com.restaurant.reservation.dao.TableDAO;
 import com.restaurant.reservation.service.ReservationService;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -18,8 +19,9 @@ public class MainApp {
             // Ignorieren, falls nicht erfolgreich gesetzt
         }
 
-        // Datenbank-Tabelle erstellen (falls noch nicht vorhanden)
+        // Datenbank-Tabellen erstellen (falls noch nicht vorhanden)
         ReservationDAO.createTable();
+        TableDAO.createTable();
 
         // Service und GUI starten
         ReservationService service = new ReservationService();

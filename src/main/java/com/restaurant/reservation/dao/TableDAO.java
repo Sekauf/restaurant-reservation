@@ -1,6 +1,7 @@
 package com.restaurant.reservation.dao;
 
 import com.restaurant.reservation.model.Table;
+import com.restaurant.reservation.dao.Database;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,11 +13,27 @@ import java.util.List;
  */
 public class TableDAO {
 
-    private static final String DB_URL = "jdbc:sqlite:restaurant.db";
-
     /** Stellt eine Verbindung zur SQLite-Datenbank her. */
     private Connection connect() throws SQLException {
-        return DriverManager.getConnection(DB_URL);
+        return Database.getConnection();
+    }
+
+    /**
+     * Legt die Tabelle "tables" an, falls sie noch nicht existiert.
+     */
+    public static void createTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS tables (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "name TEXT NOT NULL," +
+                "seats INTEGER NOT NULL," +
+                "hasProjector INTEGER NOT NULL)";
+        try (Connection conn = Database.getConnection();
+             Statement stmt = conn.createStatement()) {
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            System.err.println("Fehler beim Erstellen der Tisch-Tabelle: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -112,7 +129,7 @@ public class TableDAO {
      * @throws SQLException falls ein DB-Zugriffsfehler auftritt
      */
     public boolean isTableUsed(int id) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM reservations WHERE table_id = ?";
+        String sql = "SELECT COUNT(*) FROM reservations WHERE table_number = ?";
         try (Connection conn = connect();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
