@@ -32,8 +32,8 @@ public class DashboardFrame extends JFrame {
         ((JComponent) getContentPane()).setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
         // Panel mit Tischplan in der Mitte
-        JLayeredPane floorPlanPane = createFloorPlanPane();
-        add(floorPlanPane, BorderLayout.CENTER);
+        JPanel floorPlanPane = createFloorPlanPane();
+        add(new JScrollPane(floorPlanPane), BorderLayout.CENTER);
 
         // Panel für die nächsten Reservierungen in der rechten Ecke
         String[] cols = {"Datum","Uhrzeit","Tisch","Gast"};
@@ -117,9 +117,8 @@ public class DashboardFrame extends JFrame {
     }
 
     /** Erstellt das Panel mit dem Tischplan. */
-    private JLayeredPane createFloorPlanPane() {
-        JLayeredPane pane = new JLayeredPane();
-        pane.setLayout(null);
+    private JPanel createFloorPlanPane() {
+        JPanel panel = new JPanel(new GridLayout(0, 5, 10, 10));
 
         TableService tableService = new TableService();
         java.util.List<Table> tables;
@@ -129,36 +128,35 @@ public class DashboardFrame extends JFrame {
             tables = java.util.Collections.emptyList();
         }
 
-        int x = 20, y = 20;
         for (Table t : tables) {
-            JLabel lbl = createDraggableLabel("T" + t.getId());
-            lbl.setBounds(x, y, 60, 40);
-            pane.add(lbl);
-            x += 70;
-            if (x > 500) { x = 20; y += 50; }
+            JButton btn = new JButton("T" + t.getId());
+            btn.addActionListener(e -> showTableInfo(t));
+            panel.add(btn);
         }
 
-        return pane;
+        return panel;
     }
 
-    /** Erstellt ein verschiebbares Label für den Tischplan. */
-    private JLabel createDraggableLabel(String text) {
-        JLabel lbl = new JLabel(text, SwingConstants.CENTER);
-        lbl.setOpaque(true);
-        lbl.setBackground(new Color(222,184,135));
-        lbl.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
-        java.awt.event.MouseAdapter ma = new java.awt.event.MouseAdapter() {
-            Point offset;
-            @Override public void mousePressed(java.awt.event.MouseEvent e) {
-                offset = e.getPoint();
+    /** Zeigt ein Dialogfenster mit Informationen zum Tisch an. */
+    private void showTableInfo(Table table) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Tisch ").append(table.getId()).append("\n");
+        sb.append("Sitzplätze: ").append(table.getSeats()).append("\n\n");
+        try {
+            java.util.List<Reservation> list = reservationService.getReservationsForTable(table.getId());
+            if (list.isEmpty()) {
+                sb.append("Keine Reservierungen vorhanden");
+            } else {
+                sb.append("Reservierungen:\n");
+                for (Reservation r : list) {
+                    sb.append(r.getDate()).append(" ").append(r.getTime())
+                      .append(" - ").append(r.getName()).append("\n");
+                }
             }
-            @Override public void mouseDragged(java.awt.event.MouseEvent e) {
-                Point p = SwingUtilities.convertPoint(lbl, e.getPoint(), lbl.getParent());
-                lbl.setLocation(p.x - offset.x, p.y - offset.y);
-            }
-        };
-        lbl.addMouseListener(ma);
-        lbl.addMouseMotionListener(ma);
-        return lbl;
+        } catch (Exception ex) {
+            sb.append("Reservierungen konnten nicht geladen werden.");
+        }
+        JOptionPane.showMessageDialog(this, sb.toString(),
+                "Tisch " + table.getId(), JOptionPane.INFORMATION_MESSAGE);
     }
 }
