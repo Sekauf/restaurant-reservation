@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Hauptfenster (Dashboard) mit heutige Reservierungen und Navigation.
+ * Hauptfenster (Dashboard) mit heutigen Reservierungen und Navigation.
  */
 public class DashboardFrame extends JFrame {
     private final ReservationService reservationService;

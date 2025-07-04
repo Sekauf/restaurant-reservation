@@ -1,6 +1,8 @@
 package com.restaurant.reservation.ui;
 
 import com.restaurant.reservation.service.ReservationService;
+import com.restaurant.reservation.service.TableService;
+import com.restaurant.reservation.model.Table;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -22,12 +24,6 @@ public class TableSelectionDialog extends JDialog {
     private final int persons;
     private final boolean projector;
 
-    private static class TableInfo {
-        int number;
-        int seats;
-        boolean reserved;
-        TableInfo(int n, int s, boolean r) {number=n;seats=s;reserved=r;}
-    }
 
     public TableSelectionDialog(Window owner, ReservationService service, String date, String time, int persons, boolean projector) {
         super(owner, "Tisch auswählen", ModalityType.APPLICATION_MODAL);
@@ -73,19 +69,26 @@ public class TableSelectionDialog extends JDialog {
     }
 
     private void loadData() {
-        List<TableInfo> infos = new ArrayList<>();
-        for (int i=1;i<=20;i++) {
-            infos.add(new TableInfo(i,4,false));
+        TableService tableService = new TableService();
+        List<Table> tables;
+        try {
+            tables = tableService.getAllTables();
+        } catch (Exception ex) {
+            tables = new ArrayList<>();
+            JOptionPane.showMessageDialog(this, "Fehler beim Laden der Tische.", "Datenbankfehler", JOptionPane.ERROR_MESSAGE);
         }
+
         model.setRowCount(0);
-        for (TableInfo info : infos) {
-            boolean reserved=false;
+        for (Table t : tables) {
+            if (t.getSeats() < persons) continue;
+            if (projector && !t.isHasProjector()) continue;
+            boolean reserved = false;
             try {
-                reserved = reservationService.isTableReserved(date,time,info.number);
+                reserved = reservationService.isTableReserved(date, time, t.getId());
             } catch (Exception e) {
                 reserved = false;
             }
-            model.addRow(new Object[]{info.number, info.seats, reserved});
+            model.addRow(new Object[]{t.getId(), t.getSeats(), reserved});
         }
     }
 
