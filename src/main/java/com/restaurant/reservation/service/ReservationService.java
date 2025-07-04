@@ -84,4 +84,31 @@ public class ReservationService {
             throw new Exception("Datenbankfehler beim Prüfen der Reservierung.", e);
         }
     }
+
+    /** Liefert die Anzahl aktueller Reservierungen. */
+    public int getReservationCount() throws Exception {
+        try {
+            return dao.countReservations();
+        } catch (SQLException e) {
+            throw new Exception("Datenbankfehler beim Zählen der Reservierungen.", e);
+        }
+    }
+
+    /** Liefert die Anzahl stornierter Reservierungen. */
+    public int getCancellationCount() throws Exception {
+        try {
+            return dao.countCancellations();
+        } catch (SQLException e) {
+            throw new Exception("Datenbankfehler beim Zählen der Stornierungen.", e);
+        }
+    }
+
+    /** Beliebteste Uhrzeiten (nach Anzahl Reservierungen). */
+    public java.util.List<String> getPopularTimes(int limit) throws Exception {
+        try {
+            return dao.findPopularTimes(limit);
+        } catch (SQLException e) {
+            throw new Exception("Datenbankfehler beim Ermitteln der Uhrzeiten.", e);
+        }
+    }
 }
