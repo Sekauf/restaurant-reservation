@@ -2,6 +2,8 @@ package com.restaurant.reservation.ui;
 
 import com.restaurant.reservation.model.Reservation;
 import com.restaurant.reservation.service.ReservationService;
+import com.restaurant.reservation.ui.FloorPlanFrame;
+import com.restaurant.reservation.ui.StatisticsFrame;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -40,12 +42,18 @@ public class DashboardFrame extends JFrame {
 
         JButton newResButton = new JButton("Neue Reservierung");
         JButton allResButton = new JButton("Alle Reservierungen");
+        JButton planButton = new JButton("Tischplan");
+        JButton statsButton = new JButton("Statistiken");
         newResButton.setFont(newResButton.getFont().deriveFont(Font.BOLD, 14f));
         allResButton.setFont(allResButton.getFont().deriveFont(Font.BOLD, 14f));
+        planButton.setFont(planButton.getFont().deriveFont(Font.BOLD, 14f));
+        statsButton.setFont(statsButton.getFont().deriveFont(Font.BOLD, 14f));
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(newResButton);
         buttonPanel.add(allResButton);
+        buttonPanel.add(planButton);
+        buttonPanel.add(statsButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
         newResButton.addActionListener(e -> {
@@ -57,6 +65,16 @@ public class DashboardFrame extends JFrame {
         allResButton.addActionListener(e -> {
             ReservationListFrame list = new ReservationListFrame(reservationService);
             list.setVisible(true);
+        });
+
+        planButton.addActionListener(e -> {
+            FloorPlanFrame plan = new FloorPlanFrame();
+            plan.setVisible(true);
+        });
+
+        statsButton.addActionListener(e -> {
+            StatisticsFrame stats = new StatisticsFrame(reservationService);
+            stats.setVisible(true);
         });
 
         setSize(700,400);

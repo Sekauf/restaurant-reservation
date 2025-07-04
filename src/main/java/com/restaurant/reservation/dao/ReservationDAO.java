@@ -20,16 +20,23 @@ public class ReservationDAO {
      * Wird typischerweise beim Programmstart einmalig aufgerufen.
      */
     public static void createTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS reservations (" +
+        String reservationsSql = "CREATE TABLE IF NOT EXISTS reservations (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "name TEXT NOT NULL," +
                 "date TEXT NOT NULL," +
                 "time TEXT NOT NULL," +
                 "persons INTEGER NOT NULL," +
                 "table_number INTEGER NOT NULL)";
+
+        String cancelsSql = "CREATE TABLE IF NOT EXISTS cancellations (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "reservation_id INTEGER NOT NULL," +
+                "cancelled_at TEXT NOT NULL)";
+
         try (Connection conn = Database.getConnection();
              Statement stmt = conn.createStatement()) {
-            stmt.executeUpdate(sql);
+            stmt.executeUpdate(reservationsSql);
+            stmt.executeUpdate(cancelsSql);
         } catch (SQLException e) {
             System.err.println("Fehler beim Erstellen der Datenbanktabelle: " + e.getMessage());
             e.printStackTrace();
@@ -86,11 +93,16 @@ public class ReservationDAO {
      * @throws SQLException falls ein Fehler beim Löschen auftritt
      */
     public void deleteReservation(int id) throws SQLException {
-        String sql = "DELETE FROM reservations WHERE id = ?";
+        String insertCancel = "INSERT INTO cancellations(reservation_id, cancelled_at) VALUES (?, datetime('now'))";
+        String deleteRes = "DELETE FROM reservations WHERE id = ?";
         try (Connection conn = Database.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            ps.executeUpdate();
+             PreparedStatement ins = conn.prepareStatement(insertCancel);
+             PreparedStatement del = conn.prepareStatement(deleteRes)) {
+            ins.setInt(1, id);
+            ins.executeUpdate();
+
+            del.setInt(1, id);
+            del.executeUpdate();
         }
     }
 
@@ -113,5 +125,45 @@ public class ReservationDAO {
                 return rs.next();  // true, wenn mindestens ein Treffer existiert
             }
         }
+    }
+
+    /** Zählt alle aktuellen Reservierungen. */
+    public int countReservations() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM reservations";
+        try (Connection conn = Database.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            return rs.next() ? rs.getInt(1) : 0;
+        }
+    }
+
+    /** Zählt alle stornierten Reservierungen. */
+    public int countCancellations() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM cancellations";
+        try (Connection conn = Database.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            return rs.next() ? rs.getInt(1) : 0;
+        }
+    }
+
+    /**
+     * Ermittelt die beliebtesten Uhrzeiten anhand der Anzahl an Reservierungen.
+     * @param limit maximale Anzahl von Ergebnissen
+     */
+    public List<String> findPopularTimes(int limit) throws SQLException {
+        List<String> result = new ArrayList<>();
+        String sql = "SELECT time, COUNT(*) as cnt FROM reservations GROUP BY time ORDER BY cnt DESC LIMIT ?";
+        try (Connection conn = Database.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, limit);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String time = rs.getString("time");
+                    result.add(time);
+                }
+            }
+        }
+        return result;
     }
 }
