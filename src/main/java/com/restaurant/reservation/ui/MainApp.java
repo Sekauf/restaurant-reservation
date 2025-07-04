@@ -24,6 +24,9 @@ public class MainApp {
         java.awt.Color accent = new java.awt.Color(193, 149, 108);
         java.awt.Color darkRed = new java.awt.Color(139, 0, 0);
         UIManager.put("control", darkRed);
+        UIManager.put("Panel.background", darkRed);
+        UIManager.put("window", darkRed);
+        UIManager.put("Viewport.background", darkRed);
         UIManager.put("Button.background", primary);
         UIManager.put("Button.foreground", java.awt.Color.BLACK);
         UIManager.put("Table.background", secondary);
