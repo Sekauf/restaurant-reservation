@@ -166,4 +166,35 @@ public class ReservationDAO {
         }
         return result;
     }
+
+    /**
+     * Liefert alle Reservierungen für einen bestimmten Tisch.
+     *
+     * @param tableNumber die Tisch-Nummer
+     * @return Liste der Reservierungen für diesen Tisch
+     * @throws SQLException falls ein Datenbankfehler auftritt
+     */
+    public List<Reservation> getReservationsForTable(int tableNumber) throws SQLException {
+        List<Reservation> list = new ArrayList<>();
+        String sql = "SELECT id, name, date, time, persons, table_number FROM reservations " +
+                     "WHERE table_number = ? ORDER BY date, time";
+        try (Connection conn = Database.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, tableNumber);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Reservation res = new Reservation(
+                            rs.getInt("id"),
+                            rs.getString("name"),
+                            rs.getString("date"),
+                            rs.getString("time"),
+                            rs.getInt("persons"),
+                            rs.getInt("table_number")
+                    );
+                    list.add(res);
+                }
+            }
+        }
+        return list;
+    }
 }

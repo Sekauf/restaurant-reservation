@@ -111,4 +111,19 @@ public class ReservationService {
             throw new Exception("Datenbankfehler beim Ermitteln der Uhrzeiten.", e);
         }
     }
+
+    /**
+     * Gibt alle Reservierungen für einen bestimmten Tisch zurück.
+     *
+     * @param tableNumber die Tisch-Nummer
+     * @return Liste der Reservierungen
+     * @throws Exception falls ein Datenbankfehler auftritt
+     */
+    public java.util.List<Reservation> getReservationsForTable(int tableNumber) throws Exception {
+        try {
+            return dao.getReservationsForTable(tableNumber);
+        } catch (SQLException e) {
+            throw new Exception("Datenbankfehler beim Laden der Reservierungen.", e);
+        }
+    }
 }
