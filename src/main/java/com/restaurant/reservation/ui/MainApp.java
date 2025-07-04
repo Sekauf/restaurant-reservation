@@ -22,9 +22,10 @@ public class MainApp {
         java.awt.Color primary = new java.awt.Color(143, 96, 60);
         java.awt.Color secondary = new java.awt.Color(224, 207, 181);
         java.awt.Color accent = new java.awt.Color(193, 149, 108);
-        UIManager.put("control", secondary);
+        java.awt.Color darkRed = new java.awt.Color(139, 0, 0);
+        UIManager.put("control", darkRed);
         UIManager.put("Button.background", primary);
-        UIManager.put("Button.foreground", java.awt.Color.WHITE);
+        UIManager.put("Button.foreground", java.awt.Color.BLACK);
         UIManager.put("Table.background", secondary);
         UIManager.put("Table.foreground", java.awt.Color.BLACK);
 
