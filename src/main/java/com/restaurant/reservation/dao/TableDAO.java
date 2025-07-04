@@ -30,6 +30,21 @@ public class TableDAO {
         try (Connection conn = Database.getConnection();
              Statement stmt = conn.createStatement()) {
             stmt.executeUpdate(sql);
+
+            // Beispiel-Daten einfügen, falls noch keine Tische vorhanden sind
+            try (ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM tables")) {
+                if (rs.next() && rs.getInt(1) == 0) {
+                    String insert = "INSERT INTO tables (name, seats, hasProjector) VALUES (?, ?, ?)";
+                    try (PreparedStatement ps = conn.prepareStatement(insert)) {
+                        for (int i = 1; i <= 15; i++) {
+                            ps.setString(1, "Tisch " + i);
+                            ps.setInt(2, 2 + (i % 7)); // Sitzplätze 2-8
+                            ps.setInt(3, 0); // kein Projektor
+                            ps.executeUpdate();
+                        }
+                    }
+                }
+            }
         } catch (SQLException e) {
             System.err.println("Fehler beim Erstellen der Tisch-Tabelle: " + e.getMessage());
             e.printStackTrace();
