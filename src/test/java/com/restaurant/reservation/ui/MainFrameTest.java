@@ -2,6 +2,7 @@ import com.restaurant.reservation.model.Reservation;
 import com.restaurant.reservation.service.ReservationService;
 import com.restaurant.reservation.ui.MainFrame;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
@@ -44,6 +45,13 @@ public class MainFrameTest {
         System.setProperty("java.awt.headless", "true");
         service = new InMemoryService();
         frame = new MainFrame(service);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        if (frame != null) {
+            frame.dispose();
+        }
     }
 
     @Test
