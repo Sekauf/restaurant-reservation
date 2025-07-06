@@ -14,7 +14,12 @@ import com.formdev.flatlaf.FlatLightLaf;
  */
 public class MainApp {
     public static void main(String[] args) {
-        // Modernes FlatLaf-Look-and-Feel aktivieren
+        // Modernes FlatLaf-Look-and-Feel aktivieren und mit
+        // einer eigenen Akzentfarbe versehen, damit die
+        // Oberfläche etwas farbiger wirkt
+        java.util.Map<String, String> uiDefaults =
+                java.util.Collections.singletonMap("@accentColor", "#ff5722");
+        com.formdev.flatlaf.FlatLaf.setGlobalExtraDefaults(uiDefaults);
         FlatLightLaf.setup();
         // Lesbarere Standardschrift nutzen
         UIManager.put("defaultFont", new FontUIResource("SansSerif", java.awt.Font.PLAIN, 14));
