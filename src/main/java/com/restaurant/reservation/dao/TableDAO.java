@@ -157,4 +157,28 @@ public class TableDAO {
         }
         return false;
     }
+
+    /**
+     * Sucht einen Tisch anhand seiner ID.
+     *
+     * @param id die Tisch-ID
+     * @return das gefundene {@link Table}-Objekt oder {@code null}, wenn kein Eintrag existiert
+     * @throws SQLException bei Datenbankfehlern
+     */
+    public Table findTableById(int id) throws SQLException {
+        String sql = "SELECT id, name, seats, hasProjector FROM tables WHERE id = ?";
+        try (Connection conn = connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    String name = rs.getString("name");
+                    int seats = rs.getInt("seats");
+                    boolean hasProjector = rs.getInt("hasProjector") == 1;
+                    return new Table(id, name, seats, hasProjector);
+                }
+            }
+        }
+        return null;
+    }
 }

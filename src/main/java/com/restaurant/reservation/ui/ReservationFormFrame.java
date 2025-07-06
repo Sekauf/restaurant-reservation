@@ -1,6 +1,7 @@
 package com.restaurant.reservation.ui;
 
 import com.restaurant.reservation.service.ReservationService;
+import com.restaurant.reservation.service.TableService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,9 +21,9 @@ public class ReservationFormFrame extends JFrame {
     private JComboBox<String> dateCombo;
     private JComboBox<String> timeCombo;
     private JTextField nameField;
-    private JCheckBox projectorBox;
     private JLabel tableLabel;
     private Integer selectedTable;
+    private final TableService tableService = new TableService();
 
     public ReservationFormFrame(DashboardFrame dashboard, ReservationService service) {
         this.dashboard = dashboard;
@@ -61,8 +62,6 @@ public class ReservationFormFrame extends JFrame {
         nameField = new JTextField();
         formPanel.add(nameField);
 
-        projectorBox = new JCheckBox("Projektor benötigt");
-        formPanel.add(projectorBox);
         JButton selectTableBtn = new JButton("Tisch auswählen");
         formPanel.add(selectTableBtn);
 
@@ -91,8 +90,7 @@ public class ReservationFormFrame extends JFrame {
         String date = (String) dateCombo.getSelectedItem();
         String time = (String) timeCombo.getSelectedItem();
         int persons = (Integer) personsCombo.getSelectedItem();
-        boolean proj = projectorBox.isSelected();
-        TableSelectionDialog dialog = new TableSelectionDialog(this, reservationService, date, time, persons, proj);
+        TableSelectionDialog dialog = new TableSelectionDialog(this, reservationService, date, time, persons);
         dialog.setVisible(true);
         Integer tbl = dialog.getSelectedTable();
         if (tbl != null) {
@@ -108,6 +106,16 @@ public class ReservationFormFrame extends JFrame {
         int persons = (Integer) personsCombo.getSelectedItem();
         if (name.isEmpty() || selectedTable == null) {
             JOptionPane.showMessageDialog(this, "Bitte Name und Tisch auswählen.");
+            return;
+        }
+        try {
+            com.restaurant.reservation.model.Table tbl = tableService.getTableById(selectedTable);
+            if (tbl != null && persons > tbl.getSeats()) {
+                JOptionPane.showMessageDialog(this, "Gewählter Tisch hat nicht genug Sitzplätze.");
+                return;
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Konnte Sitzplatzanzahl nicht prüfen.", "Fehler", JOptionPane.WARNING_MESSAGE);
             return;
         }
         try {
