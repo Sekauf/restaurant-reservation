@@ -44,8 +44,9 @@ public class MainFrame extends JFrame {
         setTitle("Restaurant-Reservierungssystem");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
-        // Randabstand um den Inhalt
+        // Randabstand um den Inhalt und dezente Hintergrundfarbe
         ((JComponent) getContentPane()).setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        getContentPane().setBackground(new Color(255,250,240));
 
         // Tabelle und Modell initialisieren
         String[] columnNames = { "ID", "Name", "Datum", "Uhrzeit", "Personen", "Tisch" };

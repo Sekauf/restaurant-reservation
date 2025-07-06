@@ -30,9 +30,11 @@ public class DashboardFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout(10,10));
         ((JComponent) getContentPane()).setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        getContentPane().setBackground(new Color(255,250,240));
 
         // Panel mit Tischplan in der Mitte
         JPanel floorPlanPane = createFloorPlanPane();
+        floorPlanPane.setBackground(new Color(255,250,240));
         add(new JScrollPane(floorPlanPane), BorderLayout.CENTER);
 
         // Panel für die nächsten Reservierungen in der rechten Ecke
@@ -45,6 +47,7 @@ public class DashboardFrame extends JFrame {
         JScrollPane tableScroll = new JScrollPane(reservationTable);
         tableScroll.setPreferredSize(new Dimension(250, 0));
         JPanel reservationPanel = new JPanel(new BorderLayout());
+        reservationPanel.setBackground(new Color(255,250,240));
         JLabel headline = new JLabel("Nächste Reservierungen");
         headline.setFont(headline.getFont().deriveFont(Font.BOLD, 16f));
         reservationPanel.add(headline, BorderLayout.NORTH);
@@ -61,6 +64,7 @@ public class DashboardFrame extends JFrame {
         statsButton.setFont(statsButton.getFont().deriveFont(Font.BOLD, 14f));
 
         JPanel buttonPanel = new JPanel();
+        buttonPanel.setBackground(new Color(255,250,240));
         buttonPanel.add(newResButton);
         buttonPanel.add(allResButton);
         buttonPanel.add(planButton);

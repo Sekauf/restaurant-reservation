@@ -22,18 +22,21 @@ public class StatisticsFrame extends JFrame {
     }
 
     private void buildUi() {
-        setLayout(new GridLayout(0,1,5,5));
+        // Panel mit etwas Rand, damit die Labels nicht direkt am Rand kleben
+        JPanel content = new JPanel(new GridLayout(0,1,5,5));
+        content.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
         try {
             int reservations = service.getReservationCount();
             int cancels = service.getCancellationCount();
             double cancelRate = reservations + cancels == 0 ? 0 : (double)cancels/(reservations+cancels)*100.0;
-            add(new JLabel("Aktuelle Reservierungen: " + reservations));
-            add(new JLabel("Stornierungen gesamt: " + cancels));
-            add(new JLabel("Stornierungsrate: " + String.format("%.1f%%", cancelRate)));
+            content.add(new JLabel("Aktuelle Reservierungen: " + reservations));
+            content.add(new JLabel("Stornierungen gesamt: " + cancels));
+            content.add(new JLabel("Stornierungsrate: " + String.format("%.1f%%", cancelRate)));
             List<String> popular = service.getPopularTimes(3);
-            add(new JLabel("Beliebteste Zeiten: " + String.join(", ", popular)));
+            content.add(new JLabel("Beliebteste Zeiten: " + String.join(", ", popular)));
         } catch (Exception e) {
-            add(new JLabel("Fehler beim Laden der Statistiken."));
+            content.add(new JLabel("Fehler beim Laden der Statistiken."));
         }
+        add(content);
     }
 }
