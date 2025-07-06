@@ -29,3 +29,26 @@ Das Projekt folgt einer Schichtentrennung nach MVC:
 6. **Beispielreservierungen importieren (optional):** Nach dem ersten Start können mit
    `sqlite3 db/restaurant.db < db/sample_reservations.sql` einige Standarddaten
    für den Zeitraum 13.06.2025 bis 20.06.2025 eingespielt werden.
+
+## Erstellen einer ausführbaren JAR-Datei
+
+Mit `mvn clean package` wird im Ordner `target` eine JAR-Datei
+`reservation-system-1.0-SNAPSHOT-jar-with-dependencies.jar` erzeugt.
+Diese enthält alle benötigten Bibliotheken und kann per
+`java -jar` ausgeführt werden.
+
+### Windows-EXE via jpackage
+
+Um daraus eine Windows-EXE zu erzeugen, kann das im JDK enthaltene
+Tool `jpackage` verwendet werden:
+
+```bash
+jpackage \
+  --input target \
+  --main-jar reservation-system-1.0-SNAPSHOT-jar-with-dependencies.jar \
+  --main-class com.restaurant.reservation.ui.MainApp \
+  --name RestaurantReservation
+```
+
+Im Ordner `target` entsteht danach ein Installationspaket, über das
+die Anwendung wie ein normales Programm gestartet werden kann.
