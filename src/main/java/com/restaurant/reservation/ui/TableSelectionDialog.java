@@ -22,16 +22,14 @@ public class TableSelectionDialog extends JDialog {
     private final String date;
     private final String time;
     private final int persons;
-    private final boolean projector;
 
 
-    public TableSelectionDialog(Window owner, ReservationService service, String date, String time, int persons, boolean projector) {
+    public TableSelectionDialog(Window owner, ReservationService service, String date, String time, int persons) {
         super(owner, "Tisch auswählen", ModalityType.APPLICATION_MODAL);
         this.reservationService = service;
         this.date = date;
         this.time = time;
         this.persons = persons;
-        this.projector = projector;
         buildUi();
         loadData();
     }
@@ -81,7 +79,6 @@ public class TableSelectionDialog extends JDialog {
         model.setRowCount(0);
         for (Table t : tables) {
             if (t.getSeats() < persons) continue;
-            if (projector && !t.isHasProjector()) continue;
             boolean reserved = false;
             try {
                 reserved = reservationService.isTableReserved(date, time, t.getId());

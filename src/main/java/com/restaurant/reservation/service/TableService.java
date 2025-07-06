@@ -62,4 +62,15 @@ public class TableService {
         // Wenn nicht verwendet, löschen
         tableDAO.delete(id);
     }
+
+    /**
+     * Liefert einen Tisch anhand seiner ID.
+     *
+     * @param id die Tisch-ID
+     * @return das Tisch-Objekt oder {@code null}, wenn kein Tisch existiert
+     * @throws SQLException falls beim Datenbankzugriff ein Fehler auftritt
+     */
+    public Table getTableById(int id) throws SQLException {
+        return tableDAO.findTableById(id);
+    }
 }
