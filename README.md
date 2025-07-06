@@ -1,10 +1,11 @@
 # Restaurant-Reservierungssystem
 
-Dieses Projekt implementiert ein einfaches **Restaurant-Reservierungssystem** als Maven-Java-Anwendung (JDK 17). Es bietet eine Swing-basierte grafische Oberfläche und verwendet eine SQLite-Datenbank zur persistenten Speicherung der Reservierungen.
+Dieses Projekt implementiert ein einfaches **Restaurant-Reservierungssystem** als Maven-Java-Anwendung (JDK 17). Es bietet eine Swing-basierte grafische Oberfläche, die mit [FlatLaf](https://www.formdev.com/flatlaf/) modern gestaltet ist, und verwendet eine SQLite-Datenbank zur persistenten Speicherung der Reservierungen.
 
 ## Aufbau und Funktionsumfang
 
 - **GUI (Swing):** Ermöglicht das Anlegen neuer Reservierungen über ein Formular (Name des Gasts sowie Auswahl von Datum, Uhrzeit, Personenzahl und Tisch-Nr über Dropdown-Menüs) und listet alle vorhandenen Reservierungen in einer Tabelle auf. Eine ausgewählte Reservierung kann per Knopfdruck wieder gelöscht werden.
+- **Modernes Design:** Dank FlatLaf erscheint die Oberfläche zeitgemäß und verwendet eine gut lesbare Standardschriftgröße.
 - **Datenbank (SQLite):** Die Reservierungen werden in der Datei `db/restaurant.db` gespeichert. Beim ersten Start der Anwendung wird die benötigte Tabelle automatisch angelegt. Fehlt der Ordner `db`, wird er ebenfalls erzeugt, sodass alle Reservierungsdaten zwischen Programmstarts erhalten bleiben. Sind noch keine Tische vorhanden, legt das Programm zudem 15 Beispiel-Tische mit unterschiedlichen Sitzplatzanzahlen an.
 - **Verhindern von Doppelbuchungen:** Das System prüft beim Anlegen einer Reservierung, ob für die Kombination aus Tisch-Nr und Datum/Uhrzeit bereits eine Reservierung existiert, und verhindert ggf. doppelte Einträge.
 
