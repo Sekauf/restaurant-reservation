@@ -24,6 +24,11 @@ public class ReservationDAOTest {
         for (Reservation r : all) {
             dao.deleteReservation(r.getId());
         }
+        // also remove entries from cancellations table
+        try (java.sql.Connection conn = com.restaurant.reservation.dao.Database.getConnection();
+             java.sql.Statement stmt = conn.createStatement()) {
+            stmt.executeUpdate("DELETE FROM cancellations");
+        }
     }
 
     @Test
