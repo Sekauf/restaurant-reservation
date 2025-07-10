@@ -7,6 +7,7 @@ Dieses Projekt implementiert ein einfaches **Restaurant-Reservierungssystem** al
 - **GUI (Swing):** Ermöglicht das Anlegen neuer Reservierungen über ein Formular (Name des Gasts sowie Auswahl von Datum, Uhrzeit, Personenzahl und Tisch-Nr über Dropdown-Menüs) und listet alle vorhandenen Reservierungen in einer Tabelle auf. Eine ausgewählte Reservierung kann per Knopfdruck wieder gelöscht werden.
 - **Modernes Design:** Dank FlatLaf erscheint die Oberfläche zeitgemäß und verwendet eine gut lesbare Standardschriftgröße.
 - **Datenbank (SQLite):** Die Reservierungen werden in der Datei `db/restaurant.db` gespeichert. Beim ersten Start der Anwendung wird die benötigte Tabelle automatisch angelegt. Fehlt der Ordner `db`, wird er ebenfalls erzeugt, sodass alle Reservierungsdaten zwischen Programmstarts erhalten bleiben. Sind noch keine Tische vorhanden, legt das Programm zudem 15 Beispiel-Tische mit unterschiedlichen Sitzplatzanzahlen an.
+- **SQL-Skripte:** Beispiel-Dateien befinden sich im Ordner `sql`.
 - **Verhindern von Doppelbuchungen:** Das System prüft beim Anlegen einer Reservierung, ob für die Kombination aus Tisch-Nr und Datum/Uhrzeit bereits eine Reservierung existiert, und verhindert ggf. doppelte Einträge.
 
 ## Projektstruktur
@@ -27,7 +28,7 @@ Das Projekt folgt einer Schichtentrennung nach MVC:
 4. **Bedienung:** Im gestarteten Programm können über das Formular unten neue Reservierungen hinzugefügt werden (`Hinzufügen`). Die Liste oben zeigt alle Reservierungen mit ID, Name, Datum, Uhrzeit, Personenzahl und Tisch-Nr. Zum **Löschen** einer Reservierung zunächst einen Eintrag in der Tabelle markieren und dann auf `Löschen` klicken. Bei fehlerhaften Eingaben oder Datenbankfehlern erscheinen entsprechende Fehlermeldungen.
 5. **Beenden:** Das Programm kann über das Schließen des Fensters beendet werden.
 6. **Beispielreservierungen importieren (optional):** Nach dem ersten Start können mit
-   `sqlite3 db/restaurant.db < db/sample_reservations.sql` einige Standarddaten
+   `sqlite3 db/restaurant.db < sql/sample_reservations.sql` einige Standarddaten
    für den Zeitraum 13.06.2025 bis 20.06.2025 eingespielt werden.
 
 ## Erstellen einer ausführbaren JAR-Datei
