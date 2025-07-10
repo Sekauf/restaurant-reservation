@@ -25,16 +25,24 @@ public class ReservationListFrame extends JFrame {
         setLayout(new BorderLayout(10,10));
         ((JComponent)getContentPane()).setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
-        model = new DefaultTableModel(new Object[]{"Datum","Uhrzeit","Tisch","Gast"},0) {
+        model = new DefaultTableModel(new Object[]{"Datum","Uhrzeit","Tisch","Gast","Status"},0) {
             @Override public boolean isCellEditable(int r,int c){return false;}
         };
         table = new JTable(model);
         add(new JScrollPane(table), BorderLayout.CENTER);
 
         JButton deleteBtn = new JButton("Stornieren");
-        add(deleteBtn, BorderLayout.SOUTH);
+        JButton attendBtn = new JButton("Anwesend");
+        JButton noShowBtn = new JButton("No-Show");
+        JPanel south = new JPanel();
+        south.add(deleteBtn);
+        south.add(attendBtn);
+        south.add(noShowBtn);
+        add(south, BorderLayout.SOUTH);
 
         deleteBtn.addActionListener(e -> onDelete());
+        attendBtn.addActionListener(e -> setStatus("ATTENDED"));
+        noShowBtn.addActionListener(e -> setStatus("NOSHOW"));
 
         setSize(600,400);
         setLocationRelativeTo(null);
@@ -46,7 +54,7 @@ public class ReservationListFrame extends JFrame {
             reservations = service.getAllReservations();
             model.setRowCount(0);
             for (Reservation r : reservations) {
-                model.addRow(new Object[]{r.getDate(), r.getTime(), r.getTableNumber(), r.getName()});
+                model.addRow(new Object[]{r.getDate(), r.getTime(), r.getTableNumber(), r.getName(), r.getStatus()});
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Reservierungen konnten nicht geladen werden.");
@@ -64,6 +72,21 @@ public class ReservationListFrame extends JFrame {
         if (confirm != JOptionPane.YES_OPTION) return;
         try {
             service.deleteReservation(res.getId());
+            loadData();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void setStatus(String status) {
+        int row = table.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Bitte eine Reservierung auswählen.");
+            return;
+        }
+        Reservation res = reservations.get(row);
+        try {
+            service.setStatus(res.getId(), status);
             loadData();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);

@@ -28,10 +28,15 @@ public class StatisticsFrame extends JFrame {
         try {
             int reservations = service.getReservationCount();
             int cancels = service.getCancellationCount();
+            int noShows = service.getNoShowCount();
+            int attended = service.getAttendedCount();
             double cancelRate = reservations + cancels == 0 ? 0 : (double)cancels/(reservations+cancels)*100.0;
+            double noShowRate = attended + noShows == 0 ? 0 : (double)noShows/(attended+noShows)*100.0;
             content.add(new JLabel("Aktuelle Reservierungen: " + reservations));
             content.add(new JLabel("Stornierungen gesamt: " + cancels));
             content.add(new JLabel("Stornierungsrate: " + String.format("%.1f%%", cancelRate)));
+            content.add(new JLabel("No-Shows gesamt: " + noShows));
+            content.add(new JLabel("No-Show-Rate: " + String.format("%.1f%%", noShowRate)));
             List<String> popular = service.getPopularTimes(3);
             content.add(new JLabel("Beliebteste Zeiten: " + String.join(", ", popular)));
         } catch (Exception e) {

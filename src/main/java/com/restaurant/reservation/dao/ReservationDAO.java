@@ -26,7 +26,8 @@ public class ReservationDAO {
                 "date TEXT NOT NULL," +
                 "time TEXT NOT NULL," +
                 "persons INTEGER NOT NULL," +
-                "table_number INTEGER NOT NULL)";
+                "table_number INTEGER NOT NULL," +
+                "status TEXT NOT NULL DEFAULT 'PENDING')";
 
         String cancelsSql = "CREATE TABLE IF NOT EXISTS cancellations (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -50,7 +51,7 @@ public class ReservationDAO {
      */
     public List<Reservation> getAllReservations() throws SQLException {
         List<Reservation> list = new ArrayList<>();
-        String sql = "SELECT id, name, date, time, persons, table_number FROM reservations ORDER BY date, time";
+        String sql = "SELECT id, name, date, time, persons, table_number, status FROM reservations ORDER BY date, time";
         try (Connection conn = Database.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -61,7 +62,8 @@ public class ReservationDAO {
                         rs.getString("date"),
                         rs.getString("time"),
                         rs.getInt("persons"),
-                        rs.getInt("table_number")
+                        rs.getInt("table_number"),
+                        rs.getString("status")
                 );
                 list.add(res);
             }
@@ -75,7 +77,7 @@ public class ReservationDAO {
      * @throws SQLException falls ein Fehler beim Einfügen auftritt
      */
     public void addReservation(Reservation reservation) throws SQLException {
-        String sql = "INSERT INTO reservations(name, date, time, persons, table_number) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO reservations(name, date, time, persons, table_number, status) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = Database.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, reservation.getName());
@@ -83,6 +85,7 @@ public class ReservationDAO {
             ps.setString(3, reservation.getTime());
             ps.setInt(4, reservation.getPersons());
             ps.setInt(5, reservation.getTableNumber());
+            ps.setString(6, reservation.getStatus());
             ps.executeUpdate();
         }
     }
@@ -176,7 +179,7 @@ public class ReservationDAO {
      */
     public List<Reservation> getReservationsForTable(int tableNumber) throws SQLException {
         List<Reservation> list = new ArrayList<>();
-        String sql = "SELECT id, name, date, time, persons, table_number FROM reservations " +
+        String sql = "SELECT id, name, date, time, persons, table_number, status FROM reservations " +
                      "WHERE table_number = ? ORDER BY date, time";
         try (Connection conn = Database.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -189,12 +192,44 @@ public class ReservationDAO {
                             rs.getString("date"),
                             rs.getString("time"),
                             rs.getInt("persons"),
-                            rs.getInt("table_number")
+                            rs.getInt("table_number"),
+                            rs.getString("status")
                     );
                     list.add(res);
                 }
             }
         }
         return list;
+    }
+
+    /** Aktualisiert den Status einer Reservierung. */
+    public void updateStatus(int id, String status) throws SQLException {
+        String sql = "UPDATE reservations SET status = ? WHERE id = ?";
+        try (Connection conn = Database.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, status);
+            ps.setInt(2, id);
+            ps.executeUpdate();
+        }
+    }
+
+    /** Zählt Reservierungen mit Status 'NOSHOW'. */
+    public int countNoShows() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM reservations WHERE status = 'NOSHOW'";
+        try (Connection conn = Database.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            return rs.next() ? rs.getInt(1) : 0;
+        }
+    }
+
+    /** Zählt Reservierungen mit Status 'ATTENDED'. */
+    public int countAttended() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM reservations WHERE status = 'ATTENDED'";
+        try (Connection conn = Database.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            return rs.next() ? rs.getInt(1) : 0;
+        }
     }
 }
