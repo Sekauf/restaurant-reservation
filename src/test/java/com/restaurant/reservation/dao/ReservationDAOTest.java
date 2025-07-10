@@ -19,12 +19,10 @@ public class ReservationDAOTest {
 
     @AfterEach
     public void cleanup() throws Exception {
-        // delete all reservations to keep DB clean
         List<Reservation> all = dao.getAllReservations();
         for (Reservation r : all) {
             dao.deleteReservation(r.getId());
         }
-        // also remove entries from cancellations table
         try (java.sql.Connection conn = com.restaurant.reservation.dao.Database.getConnection();
              java.sql.Statement stmt = conn.createStatement()) {
             stmt.executeUpdate("DELETE FROM cancellations");

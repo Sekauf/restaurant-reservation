@@ -40,7 +40,7 @@ public class ReservationDAO {
             stmt.executeUpdate(reservationsSql);
             stmt.executeUpdate(cancelsSql);
 
-            // Check if the column 'status' exists (for older DB versions)
+            // Status-Spalte ergänzen (Kompatibilität mit älteren DB-Versionen)
             boolean hasStatus = false;
             try (ResultSet rs = stmt.executeQuery("PRAGMA table_info(reservations)")) {
                 while (rs.next()) {
@@ -92,13 +92,13 @@ public class ReservationDAO {
     public static void mergeSampleDataFromFile(String path) {
         java.nio.file.Path p = java.nio.file.Paths.get(path);
         if (!java.nio.file.Files.exists(p)) {
-            return; // nichts zu tun
+            return;
         }
         try (Connection conn = Database.getConnection();
              Statement stmt = conn.createStatement()) {
             String sql = java.nio.file.Files.readString(p, java.nio.charset.StandardCharsets.UTF_8);
             stmt.executeUpdate(sql);
-            java.nio.file.Files.delete(p); // Datei nach erfolgreichem Import löschen
+            java.nio.file.Files.delete(p); // Datei nach Import entfernen
         } catch (Exception e) {
             System.err.println("Fehler beim Mergen der Beispieldaten: " + e.getMessage());
             e.printStackTrace();
@@ -186,7 +186,7 @@ public class ReservationDAO {
             ps.setString(2, time);
             ps.setInt(3, tableNumber);
             try (ResultSet rs = ps.executeQuery()) {
-                return rs.next();  // true, wenn mindestens ein Treffer existiert
+                return rs.next();
             }
         }
     }

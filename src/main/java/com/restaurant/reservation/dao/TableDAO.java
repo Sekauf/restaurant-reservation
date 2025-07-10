@@ -31,7 +31,7 @@ public class TableDAO {
              Statement stmt = conn.createStatement()) {
             stmt.executeUpdate(sql);
 
-            // Beispiel-Daten einfügen, falls noch keine Tische vorhanden sind
+            // Beispieldaten einfügen, wenn noch keine Tische existieren
             try (ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM tables")) {
                 if (rs.next() && rs.getInt(1) == 0) {
                     String insert = "INSERT INTO tables (name, seats, hasProjector) VALUES (?, ?, ?)";
@@ -63,7 +63,6 @@ public class TableDAO {
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                // Ergebnissatz auslesen und Table-Objekt erstellen
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
                 int seats = rs.getInt("seats");

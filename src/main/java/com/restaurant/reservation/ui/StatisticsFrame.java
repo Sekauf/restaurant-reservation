@@ -15,7 +15,6 @@ import java.util.List;
 public class StatisticsFrame extends JFrame {
     private final ReservationService service;
 
-    // Felder zum Speichern der berechneten Statistiken
     private int reservations;
     private int cancels;
     private int noShows;
@@ -35,7 +34,6 @@ public class StatisticsFrame extends JFrame {
 
     private void buildUi() {
         JPanel wrapper = new JPanel(new BorderLayout());
-        // Panel mit etwas Rand, damit die Labels nicht direkt am Rand kleben
         JPanel content = new JPanel(new GridLayout(0,1,5,5));
         content.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 

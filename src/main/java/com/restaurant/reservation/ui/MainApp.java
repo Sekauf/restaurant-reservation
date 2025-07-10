@@ -14,27 +14,20 @@ import com.formdev.flatlaf.FlatLightLaf;
  */
 public class MainApp {
     public static void main(String[] args) {
-        // Modernes FlatLaf-Look-and-Feel aktivieren und mit
-        // einer eigenen Akzentfarbe versehen, damit die
-        // Oberfläche etwas farbiger wirkt
+        // FlatLaf-Look-and-Feel
         java.util.Map<String, String> uiDefaults =
                 java.util.Collections.singletonMap("@accentColor", "#ff5722");
         com.formdev.flatlaf.FlatLaf.setGlobalExtraDefaults(uiDefaults);
         FlatLightLaf.setup();
-        // Lesbarere Standardschrift nutzen
         UIManager.put("defaultFont", new FontUIResource("SansSerif", java.awt.Font.PLAIN, 14));
 
-        // Datenbank-Tabellen erstellen (falls noch nicht vorhanden)
+        // Datenbank vorbereiten
         ReservationDAO.createTable();
         TableDAO.createTable();
-
-        // Falls vorhanden: Beispieldaten aus Datei mergen und Datei löschen
         ReservationDAO.mergeSampleDataFromFile("sql/sample_reservations.sql");
-
-        // Beispielreservierungen aus Ressourcen importieren, falls die Tabelle leer ist
         ReservationDAO.importSampleDataIfEmpty();
 
-        // Service und GUI starten
+        // Anwendung starten
         ReservationService service = new ReservationService();
         SwingUtilities.invokeLater(() -> {
             DashboardFrame frame = new DashboardFrame(service);

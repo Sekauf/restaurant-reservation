@@ -32,12 +32,10 @@ public class DashboardFrame extends JFrame {
         ((JComponent) getContentPane()).setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
         getContentPane().setBackground(new Color(255,250,240));
 
-        // Panel mit Tischplan in der Mitte
         JPanel floorPlanPane = createFloorPlanPane();
         floorPlanPane.setBackground(new Color(255,250,240));
         add(new JScrollPane(floorPlanPane), BorderLayout.CENTER);
 
-        // Panel für die nächsten Reservierungen in der rechten Ecke
         String[] cols = {"Datum","Uhrzeit","Tisch","Gast"};
         tableModel = new DefaultTableModel(cols,0) {
             @Override

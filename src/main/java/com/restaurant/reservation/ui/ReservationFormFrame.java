@@ -119,7 +119,6 @@ public class ReservationFormFrame extends JFrame {
             return;
         }
         try {
-            // format check
             LocalDate.parse(date);
             LocalTime.parse(time);
         } catch (DateTimeParseException ex) {

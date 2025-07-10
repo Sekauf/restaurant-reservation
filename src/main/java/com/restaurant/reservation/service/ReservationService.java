@@ -40,12 +40,10 @@ public class ReservationService {
      * @throws Exception bei fachlichen Fehlern (z.B. Doppelbuchung) oder Datenbankfehlern
      */
     public void addReservation(String name, String date, String time, int persons, int tableNumber) throws Exception {
-        // Prüfen, ob für Datum/Zeit/Tisch bereits eine Reservierung existiert
         try {
             if (dao.existsReservation(date, time, tableNumber)) {
                 throw new Exception("Dieser Tisch ist zu diesem Zeitpunkt bereits reserviert.");
             }
-            // Falls frei, Reservierung in DB speichern
             Reservation res = new Reservation(name, date, time, persons, tableNumber);
             dao.addReservation(res);
         } catch (SQLException e) {
