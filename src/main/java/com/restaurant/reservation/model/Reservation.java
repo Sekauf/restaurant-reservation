@@ -17,12 +17,14 @@ public class Reservation {
     private int persons;
     /** Tisch-Nummer im Restaurant */
     private int tableNumber;
+    /** Status der Reservierung (PENDING, ATTENDED oder NOSHOW) */
+    private String status;
 
     /**
      * Konstruktor für eine neue Reservierung (ohne ID, z.B. vor Datenbank-Speicherung).
      */
     public Reservation(String name, String date, String time, int persons, int tableNumber) {
-        this(null, name, date, time, persons, tableNumber);
+        this(null, name, date, time, persons, tableNumber, "PENDING");
     }
 
     /**
@@ -34,13 +36,21 @@ public class Reservation {
      * @param persons Anzahl der Personen
      * @param tableNumber Tisch-Nummer
      */
-    public Reservation(Integer id, String name, String date, String time, int persons, int tableNumber) {
+    public Reservation(Integer id, String name, String date, String time, int persons, int tableNumber, String status) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
         this.persons = persons;
         this.tableNumber = tableNumber;
+        this.status = status;
+    }
+
+    /**
+     * Kompatibilitätskonstruktor ohne Status.
+     */
+    public Reservation(Integer id, String name, String date, String time, int persons, int tableNumber) {
+        this(id, name, date, time, persons, tableNumber, "PENDING");
     }
 
     public Integer getId() {
@@ -89,5 +99,13 @@ public class Reservation {
 
     public void setTableNumber(int tableNumber) {
         this.tableNumber = tableNumber;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

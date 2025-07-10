@@ -126,4 +126,31 @@ public class ReservationService {
             throw new Exception("Datenbankfehler beim Laden der Reservierungen.", e);
         }
     }
+
+    /** Setzt den Status einer Reservierung. */
+    public void setStatus(int reservationId, String status) throws Exception {
+        try {
+            dao.updateStatus(reservationId, status);
+        } catch (SQLException e) {
+            throw new Exception("Datenbankfehler beim Aktualisieren des Status.", e);
+        }
+    }
+
+    /** Anzahl der No-Shows. */
+    public int getNoShowCount() throws Exception {
+        try {
+            return dao.countNoShows();
+        } catch (SQLException e) {
+            throw new Exception("Datenbankfehler beim Zählen der No-Shows.", e);
+        }
+    }
+
+    /** Anzahl der als erschienen markierten Reservierungen. */
+    public int getAttendedCount() throws Exception {
+        try {
+            return dao.countAttended();
+        } catch (SQLException e) {
+            throw new Exception("Datenbankfehler beim Zählen der Besuche.", e);
+        }
+    }
 }
