@@ -39,7 +39,6 @@ public class Table {
         this(0, name, seats, hasProjector);
     }
 
-    // Getter und Setter für die Felder:
 
     public int getId() {
         return id;

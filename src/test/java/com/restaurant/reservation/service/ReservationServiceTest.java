@@ -15,7 +15,6 @@ public class ReservationServiceTest {
 
     @BeforeEach
     public void setUp() {
-        // ensure tables exist
         com.restaurant.reservation.dao.ReservationDAO.createTable();
         service = new ReservationService();
     }
