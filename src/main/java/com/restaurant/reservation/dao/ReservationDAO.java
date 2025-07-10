@@ -84,6 +84,28 @@ public class ReservationDAO {
     }
 
     /**
+     * Importiert die Beispieldaten aus einer Datei und löscht diese anschließend.
+     * Damit kann die Datei "sql/sample_reservations.sql" in die bestehende
+     * Datenbank gemerged werden.
+     * @param path Pfad zur SQL-Datei mit den Beispielreservierungen
+     */
+    public static void mergeSampleDataFromFile(String path) {
+        java.nio.file.Path p = java.nio.file.Paths.get(path);
+        if (!java.nio.file.Files.exists(p)) {
+            return; // nichts zu tun
+        }
+        try (Connection conn = Database.getConnection();
+             Statement stmt = conn.createStatement()) {
+            String sql = java.nio.file.Files.readString(p, java.nio.charset.StandardCharsets.UTF_8);
+            stmt.executeUpdate(sql);
+            java.nio.file.Files.delete(p); // Datei nach erfolgreichem Import löschen
+        } catch (Exception e) {
+            System.err.println("Fehler beim Mergen der Beispieldaten: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Liest alle Reservierungen aus der Datenbank.
      * @return Liste aller Reservierungen (als Reservation-Objekte)
      * @throws SQLException falls ein Datenbankfehler auftritt
