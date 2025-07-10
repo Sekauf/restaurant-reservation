@@ -104,8 +104,16 @@ public class ReservationFormFrame extends JFrame {
         String date = (String) dateCombo.getSelectedItem();
         String time = (String) timeCombo.getSelectedItem();
         int persons = (Integer) personsCombo.getSelectedItem();
-        if (name.isEmpty() || selectedTable == null) {
-            JOptionPane.showMessageDialog(this, "Bitte Name und Tisch auswählen.");
+        if (name.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Name darf nicht leer sein");
+            return;
+        }
+        if (selectedTable == null) {
+            JOptionPane.showMessageDialog(this, "Bitte Tisch auswählen");
+            return;
+        }
+        if (persons <= 0) {
+            JOptionPane.showMessageDialog(this, "Personenzahl ungültig");
             return;
         }
         try {
