@@ -38,6 +38,21 @@ public class ReservationDAO {
              Statement stmt = conn.createStatement()) {
             stmt.executeUpdate(reservationsSql);
             stmt.executeUpdate(cancelsSql);
+
+            // Check if the column 'status' exists (for older DB versions)
+            boolean hasStatus = false;
+            try (ResultSet rs = stmt.executeQuery("PRAGMA table_info(reservations)")) {
+                while (rs.next()) {
+                    String name = rs.getString("name");
+                    if ("status".equalsIgnoreCase(name)) {
+                        hasStatus = true;
+                        break;
+                    }
+                }
+            }
+            if (!hasStatus) {
+                stmt.executeUpdate("ALTER TABLE reservations ADD COLUMN status TEXT NOT NULL DEFAULT 'PENDING'");
+            }
         } catch (SQLException e) {
             System.err.println("Fehler beim Erstellen der Datenbanktabelle: " + e.getMessage());
             e.printStackTrace();
