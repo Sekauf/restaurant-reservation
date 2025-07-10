@@ -27,9 +27,10 @@ Das Projekt folgt einer Schichtentrennung nach MVC:
     - Alternativ auf der Kommandozeile: `mvn exec:java -Dexec.mainClass=com.restaurant.reservation.ui.MainApp` (erfordert Maven Exec Plugin).
 4. **Bedienung:** Im gestarteten Programm können über das Formular unten neue Reservierungen hinzugefügt werden (`Hinzufügen`). Die Liste oben zeigt alle Reservierungen mit ID, Name, Datum, Uhrzeit, Personenzahl und Tisch-Nr. Zum **Löschen** einer Reservierung zunächst einen Eintrag in der Tabelle markieren und dann auf `Löschen` klicken. Bei fehlerhaften Eingaben oder Datenbankfehlern erscheinen entsprechende Fehlermeldungen.
 5. **Beenden:** Das Programm kann über das Schließen des Fensters beendet werden.
-6. **Beispielreservierungen importieren (optional):** Nach dem ersten Start können mit
-   `sqlite3 db/restaurant.db < sql/sample_reservations.sql` rund zwei Dutzend Beispielreservierungen
-   samt unterschiedlichen Statuswerten für den Zeitraum 13.06.2025 bis 20.06.2025 eingespielt werden.
+6. **Beispielreservierungen:** Beim ersten Start der Anwendung werden automatisch
+   die Daten aus `sql/sample_reservations.sql` importiert, sofern die Tabelle
+   noch leer ist. Alternativ kann das Skript manuell ausgeführt werden:
+   `sqlite3 db/restaurant.db < sql/sample_reservations.sql`.
 
 ## Erstellen einer ausführbaren JAR-Datei
 
