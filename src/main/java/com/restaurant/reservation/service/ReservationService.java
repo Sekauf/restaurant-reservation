@@ -41,14 +41,24 @@ public class ReservationService {
      */
     public void addReservation(String name, String date, String time, int persons, int tableNumber) throws Exception {
         try {
-            if (dao.existsReservation(date, time, tableNumber)) {
-                throw new Exception("Dieser Tisch ist zu diesem Zeitpunkt bereits reserviert.");
+            if (name == null || name.trim().isEmpty()) {
+                throw new Exception("Name darf nicht leer sein");
             }
-            Reservation res = new Reservation(name, date, time, persons, tableNumber);
+            if (persons <= 0) {
+                throw new Exception("Personenzahl ungültig");
+            }
+            java.time.LocalDate.parse(date);
+            java.time.LocalTime.parse(time);
+            if (dao.existsReservation(date, time, tableNumber)) {
+                throw new Exception("Tisch belegt");
+            }
+            Reservation res = new Reservation(name.trim(), date, time, persons, tableNumber);
             dao.addReservation(res);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new Exception("Datenbankfehler beim Speichern der Reservierung.", e);
+        } catch (java.time.format.DateTimeParseException ex) {
+            throw new Exception("Ungültiges Datum oder Uhrzeit");
         }
     }
 
