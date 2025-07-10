@@ -27,6 +27,8 @@ public class MainApp {
         // Datenbank-Tabellen erstellen (falls noch nicht vorhanden)
         ReservationDAO.createTable();
         TableDAO.createTable();
+        // Beispielreservierungen importieren, falls die Tabelle leer ist
+        ReservationDAO.importSampleDataIfEmpty();
 
         // Service und GUI starten
         ReservationService service = new ReservationService();

@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.nio.charset.StandardCharsets;
 
 /**
  * DAO-Klasse für den Zugriff auf Reservierungsdaten (SQLite-Datenbank).
@@ -55,6 +56,29 @@ public class ReservationDAO {
             }
         } catch (SQLException e) {
             System.err.println("Fehler beim Erstellen der Datenbanktabelle: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Importiert Beispielreservierungen, falls die Tabelle leer ist.
+     */
+    public static void importSampleDataIfEmpty() {
+        try (Connection conn = Database.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM reservations")) {
+            if (rs.next() && rs.getInt(1) == 0) {
+                try (java.io.InputStream in = ReservationDAO.class.getResourceAsStream("/sql/sample_reservations.sql")) {
+                    if (in != null) {
+                        String sql = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+                        stmt.executeUpdate(sql);
+                    } else {
+                        System.err.println("Beispieldatei sample_reservations.sql nicht gefunden");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Fehler beim Import der Beispielreservierungen: " + e.getMessage());
             e.printStackTrace();
         }
     }
