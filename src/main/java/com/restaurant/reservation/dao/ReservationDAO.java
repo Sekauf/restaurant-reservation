@@ -64,12 +64,11 @@ public class ReservationDAO {
                 stmt.executeUpdate("ALTER TABLE reservations ADD COLUMN status TEXT NOT NULL DEFAULT 'PENDING'");
             }
             if (!hasCreated) {
-
-                
+                // SQLite erlaubt beim Hinzufügen neuer Spalten keinen Funktion-Ausdruck
+                // als DEFAULT-Wert. Daher wird die Spalte zunächst ohne NOT NULL-Constraint
+                // angelegt und anschließend mit dem aktuellen Zeitpunkt befüllt.
                 stmt.executeUpdate("ALTER TABLE reservations ADD COLUMN created_at TEXT");
                 stmt.executeUpdate("UPDATE reservations SET created_at = datetime('now') WHERE created_at IS NULL");
-
-                stmt.executeUpdate("ALTER TABLE reservations ADD COLUMN created_at TEXT NOT NULL DEFAULT (datetime('now'))");
             }
             if (!hasConfirmed) {
                 stmt.executeUpdate("ALTER TABLE reservations ADD COLUMN confirmed_at TEXT");
