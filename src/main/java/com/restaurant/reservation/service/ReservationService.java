@@ -161,4 +161,40 @@ public class ReservationService {
             throw new Exception("Datenbankfehler beim Zählen der Besuche.", e);
         }
     }
+
+    /** Durchschnittliche Reservierungen pro Tag. */
+    public double getAverageReservationsPerDay() throws Exception {
+        try {
+            return dao.averageReservationsPerDay();
+        } catch (SQLException e) {
+            throw new Exception("Datenbankfehler beim Berechnen der Durchschnittsreservierungen.", e);
+        }
+    }
+
+    /** Durchschnittliche Auslastung in Prozent. */
+    public double getAverageOccupancy() throws Exception {
+        try {
+            return dao.averageOccupancy();
+        } catch (SQLException e) {
+            throw new Exception("Datenbankfehler beim Berechnen der Auslastung.", e);
+        }
+    }
+
+    /** Durchschnittliche Zeit zwischen Buchung und Termin in Stunden. */
+    public double getAverageLeadTimeHours() throws Exception {
+        try {
+            return dao.averageLeadTimeHours();
+        } catch (SQLException e) {
+            throw new Exception("Datenbankfehler beim Berechnen des Buchungszeitpunkts.", e);
+        }
+    }
+
+    /** Durchschnittliche Bearbeitungszeit in Stunden. */
+    public double getAverageProcessingTimeHours() throws Exception {
+        try {
+            return dao.averageProcessingTimeHours();
+        } catch (SQLException e) {
+            throw new Exception("Datenbankfehler beim Berechnen der Bearbeitungszeit.", e);
+        }
+    }
 }
