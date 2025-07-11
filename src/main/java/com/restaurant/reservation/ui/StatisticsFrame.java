@@ -21,6 +21,10 @@ public class StatisticsFrame extends JFrame {
     private int attended;
     private double cancelRate;
     private double noShowRate;
+    private double avgPerDay;
+    private double avgOccupancy;
+    private double avgLeadTime;
+    private double avgProcessing;
     private List<String> popular;
 
     public StatisticsFrame(ReservationService service) {
@@ -42,6 +46,10 @@ public class StatisticsFrame extends JFrame {
             cancels = service.getCancellationCount();
             noShows = service.getNoShowCount();
             attended = service.getAttendedCount();
+            avgPerDay = service.getAverageReservationsPerDay();
+            avgOccupancy = service.getAverageOccupancy();
+            avgLeadTime = service.getAverageLeadTimeHours();
+            avgProcessing = service.getAverageProcessingTimeHours();
             cancelRate = reservations + cancels == 0 ? 0 : (double)cancels/(reservations+cancels)*100.0;
             noShowRate = attended + noShows == 0 ? 0 : (double)noShows/(attended+noShows)*100.0;
             content.add(new JLabel("Aktuelle Reservierungen: " + reservations));
@@ -49,6 +57,10 @@ public class StatisticsFrame extends JFrame {
             content.add(new JLabel("Stornierungsrate: " + String.format("%.1f%%", cancelRate)));
             content.add(new JLabel("No-Shows gesamt: " + noShows));
             content.add(new JLabel("No-Show-Rate: " + String.format("%.1f%%", noShowRate)));
+            content.add(new JLabel(String.format("Ø Reservierungen/Tag: %.2f", avgPerDay)));
+            content.add(new JLabel(String.format("Ø Auslastung: %.1f%%", avgOccupancy)));
+            content.add(new JLabel(String.format("Ø Buchungsvorlauf: %.1f Std", avgLeadTime)));
+            content.add(new JLabel(String.format("Ø Bearbeitungszeit: %.1f Std", avgProcessing)));
             popular = service.getPopularTimes(3);
             content.add(new JLabel("Beliebteste Zeiten: " + String.join(", ", popular)));
         } catch (Exception e) {
@@ -77,6 +89,10 @@ public class StatisticsFrame extends JFrame {
                 pw.println("Stornierungsrate," + String.format("%.1f%%", cancelRate));
                 pw.println("No-Shows gesamt," + noShows);
                 pw.println("No-Show-Rate," + String.format("%.1f%%", noShowRate));
+                pw.println(String.format("Ø Reservierungen/Tag,%.2f", avgPerDay));
+                pw.println(String.format("Ø Auslastung,%.1f%%", avgOccupancy));
+                pw.println(String.format("Ø Buchungsvorlauf,%.1f Std", avgLeadTime));
+                pw.println(String.format("Ø Bearbeitungszeit,%.1f Std", avgProcessing));
                 if (popular != null) {
                     pw.println("Beliebteste Zeiten,\"" + String.join(" | ", popular) + "\"");
                 }

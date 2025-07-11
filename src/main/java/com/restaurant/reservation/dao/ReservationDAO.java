@@ -28,7 +28,9 @@ public class ReservationDAO {
                 "time TEXT NOT NULL," +
                 "persons INTEGER NOT NULL," +
                 "table_number INTEGER NOT NULL," +
-                "status TEXT NOT NULL DEFAULT 'PENDING')";
+                "status TEXT NOT NULL DEFAULT 'PENDING'," +
+                "created_at TEXT NOT NULL DEFAULT (datetime('now'))," +
+                "confirmed_at TEXT)";
 
         String cancelsSql = "CREATE TABLE IF NOT EXISTS cancellations (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -40,19 +42,32 @@ public class ReservationDAO {
             stmt.executeUpdate(reservationsSql);
             stmt.executeUpdate(cancelsSql);
 
-            // Status-Spalte ergänzen (Kompatibilität mit älteren DB-Versionen)
+            // Zusätzliche Spalten ergänzen (Kompatibilität mit älteren DB-Versionen)
             boolean hasStatus = false;
+            boolean hasCreated = false;
+            boolean hasConfirmed = false;
             try (ResultSet rs = stmt.executeQuery("PRAGMA table_info(reservations)")) {
                 while (rs.next()) {
                     String name = rs.getString("name");
                     if ("status".equalsIgnoreCase(name)) {
                         hasStatus = true;
-                        break;
+                    }
+                    if ("created_at".equalsIgnoreCase(name)) {
+                        hasCreated = true;
+                    }
+                    if ("confirmed_at".equalsIgnoreCase(name)) {
+                        hasConfirmed = true;
                     }
                 }
             }
             if (!hasStatus) {
                 stmt.executeUpdate("ALTER TABLE reservations ADD COLUMN status TEXT NOT NULL DEFAULT 'PENDING'");
+            }
+            if (!hasCreated) {
+                stmt.executeUpdate("ALTER TABLE reservations ADD COLUMN created_at TEXT NOT NULL DEFAULT (datetime('now'))");
+            }
+            if (!hasConfirmed) {
+                stmt.executeUpdate("ALTER TABLE reservations ADD COLUMN confirmed_at TEXT");
             }
         } catch (SQLException e) {
             System.err.println("Fehler beim Erstellen der Datenbanktabelle: " + e.getMessage());
@@ -138,7 +153,8 @@ public class ReservationDAO {
      * @throws SQLException falls ein Fehler beim Einfügen auftritt
      */
     public void addReservation(Reservation reservation) throws SQLException {
-        String sql = "INSERT INTO reservations(name, date, time, persons, table_number, status) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO reservations(name, date, time, persons, table_number, status, created_at) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, datetime('now'))";
         try (Connection conn = Database.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, reservation.getName());
@@ -265,11 +281,14 @@ public class ReservationDAO {
 
     /** Aktualisiert den Status einer Reservierung. */
     public void updateStatus(int id, String status) throws SQLException {
-        String sql = "UPDATE reservations SET status = ? WHERE id = ?";
+        String sql = "UPDATE reservations SET status = ?, " +
+                     "confirmed_at = CASE WHEN confirmed_at IS NULL AND ? <> 'PENDING' THEN datetime('now') ELSE confirmed_at END " +
+                     "WHERE id = ?";
         try (Connection conn = Database.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, status);
-            ps.setInt(2, id);
+            ps.setString(2, status);
+            ps.setInt(3, id);
             ps.executeUpdate();
         }
     }
@@ -291,6 +310,55 @@ public class ReservationDAO {
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             return rs.next() ? rs.getInt(1) : 0;
+        }
+    }
+
+    /** Durchschnittliche Reservierungen pro Tag. */
+    public double averageReservationsPerDay() throws SQLException {
+        String sql = "SELECT AVG(cnt) FROM (SELECT date, COUNT(*) AS cnt FROM reservations GROUP BY date)";
+        try (Connection conn = Database.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            return rs.next() ? rs.getDouble(1) : 0.0;
+        }
+    }
+
+    /** Durchschnittliche Auslastung aller Zeitslots in Prozent. */
+    public double averageOccupancy() throws SQLException {
+        int tables;
+        String tableSql = "SELECT COUNT(*) FROM tables";
+        try (Connection conn = Database.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(tableSql)) {
+            tables = rs.next() ? rs.getInt(1) : 0;
+        }
+        if (tables == 0) return 0.0;
+        String occSql = "SELECT AVG(cnt) FROM (SELECT date, time, COUNT(*) AS cnt FROM reservations GROUP BY date, time)";
+        try (Connection conn = Database.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(occSql)) {
+            double avg = rs.next() ? rs.getDouble(1) : 0.0;
+            return avg / tables * 100.0;
+        }
+    }
+
+    /** Durchschnittliche Zeit in Stunden zwischen Buchung und Termin. */
+    public double averageLeadTimeHours() throws SQLException {
+        String sql = "SELECT AVG(strftime('%s', date || ' ' || time) - strftime('%s', created_at)) / 3600.0 FROM reservations";
+        try (Connection conn = Database.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            return rs.next() ? rs.getDouble(1) : 0.0;
+        }
+    }
+
+    /** Durchschnittliche Zeit in Stunden zwischen Buchung und Bestätigung. */
+    public double averageProcessingTimeHours() throws SQLException {
+        String sql = "SELECT AVG(strftime('%s', confirmed_at) - strftime('%s', created_at)) / 3600.0 FROM reservations WHERE confirmed_at IS NOT NULL";
+        try (Connection conn = Database.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            return rs.next() ? rs.getDouble(1) : 0.0;
         }
     }
 }
