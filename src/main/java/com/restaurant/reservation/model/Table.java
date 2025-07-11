@@ -9,19 +9,10 @@ public class Table {
     private int seats;
     private boolean hasProjector;
 
-    /**
-     * Standard-Konstruktor (erzeugt einen leeren Tisch).
-     */
+
     public Table() {
     }
 
-    /**
-     * Konstruktor zur Initialisierung aller Attribute eines Tischs.
-     * @param id            die eindeutige ID des Tischs (Primärschlüssel)
-     * @param name          die Bezeichnung des Tischs
-     * @param seats         Anzahl der Sitzplätze am Tisch
-     * @param hasProjector  gibt an, ob ein fester Projektor am Tisch vorhanden ist
-     */
     public Table(int id, String name, int seats, boolean hasProjector) {
         this.id = id;
         this.name = name;
@@ -29,12 +20,7 @@ public class Table {
         this.hasProjector = hasProjector;
     }
 
-    /**
-     * Konstruktor ohne ID (für neue Tische, ID wird von der DB vergeben).
-     * @param name          die Bezeichnung des Tischs
-     * @param seats         Anzahl der Sitzplätze am Tisch
-     * @param hasProjector  gibt an, ob ein fester Projektor am Tisch vorhanden ist
-     */
+
     public Table(String name, int seats, boolean hasProjector) {
         this(0, name, seats, hasProjector);
     }

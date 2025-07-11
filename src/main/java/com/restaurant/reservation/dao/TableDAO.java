@@ -7,10 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * DAO-Klasse für den Datenzugriff auf die Tisch-Tabelle in der SQLite-Datenbank.
- * Stellt Methoden zum Finden und Abfragen von Tischen bereit.
- */
+
 public class TableDAO {
 
     /** Stellt eine Verbindung zur SQLite-Datenbank her. */
@@ -18,9 +15,6 @@ public class TableDAO {
         return Database.getConnection();
     }
 
-    /**
-     * Legt die Tabelle "tables" an, falls sie noch nicht existiert.
-     */
     public static void createTable() {
         String sql = "CREATE TABLE IF NOT EXISTS tables (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -51,11 +45,7 @@ public class TableDAO {
         }
     }
 
-    /**
-     * Liest alle Tische aus der Datenbank.
-     * @return Liste aller Tische
-     * @throws SQLException falls ein DB-Zugriffsfehler auftritt
-     */
+
     public List<Table> findAllTables() throws SQLException {
         List<Table> tables = new ArrayList<>();
         String sql = "SELECT id, name, seats, hasProjector FROM tables";
@@ -76,13 +66,7 @@ public class TableDAO {
     }
 
 
-    /**
-     * Sucht einen Tisch anhand seiner ID.
-     *
-     * @param id die Tisch-ID
-     * @return das gefundene {@link Table}-Objekt oder {@code null}, wenn kein Eintrag existiert
-     * @throws SQLException bei Datenbankfehlern
-     */
+
     public Table findTableById(int id) throws SQLException {
         String sql = "SELECT id, name, seats, hasProjector FROM tables WHERE id = ?";
         try (Connection conn = connect();

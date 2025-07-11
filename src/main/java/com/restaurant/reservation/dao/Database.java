@@ -20,11 +20,6 @@ public class Database {
         }
     }
 
-    /**
-     * Stellt eine Verbindung zur SQLite-Datenbank her.
-     * @return offene JDBC Connection
-     * @throws SQLException bei Verbindungsfehlern
-     */
     public static Connection getConnection() throws SQLException {
         File dir = new File("db");
         if (!dir.exists()) {

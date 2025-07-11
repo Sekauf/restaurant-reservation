@@ -12,8 +12,6 @@ import java.util.List;
 
 /**
  * Darstellung eines grafischen Tischplans.
- * Die Tische passen sich der Fenstergröße an und können angeklickt werden,
- * um Detailinformationen anzuzeigen.
  */
 public class FloorPlanFrame extends JFrame {
 
