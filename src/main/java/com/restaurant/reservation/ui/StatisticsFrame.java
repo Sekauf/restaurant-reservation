@@ -16,10 +16,8 @@ public class StatisticsFrame extends JFrame {
     private final ReservationService service;
 
     private int reservations;
-    private int cancels;
     private int noShows;
     private int attended;
-    private double cancelRate;
     private double noShowRate;
     private double avgPerDay;
     private double avgOccupancy;
@@ -43,18 +41,14 @@ public class StatisticsFrame extends JFrame {
 
         try {
             reservations = service.getReservationCount();
-            cancels = service.getCancellationCount();
             noShows = service.getNoShowCount();
             attended = service.getAttendedCount();
             avgPerDay = service.getAverageReservationsPerDay();
             avgOccupancy = service.getAverageOccupancy();
             avgLeadTime = service.getAverageLeadTimeHours();
             avgProcessing = service.getAverageProcessingTimeHours();
-            cancelRate = reservations + cancels == 0 ? 0 : (double)cancels/(reservations+cancels)*100.0;
             noShowRate = attended + noShows == 0 ? 0 : (double)noShows/(attended+noShows)*100.0;
             content.add(new JLabel("Aktuelle Reservierungen: " + reservations));
-            content.add(new JLabel("Stornierungen gesamt: " + cancels));
-            content.add(new JLabel("Stornierungsrate: " + String.format("%.1f%%", cancelRate)));
             content.add(new JLabel("No-Shows gesamt: " + noShows));
             content.add(new JLabel("No-Show-Rate: " + String.format("%.1f%%", noShowRate)));
             content.add(new JLabel(String.format("Ø Reservierungen/Tag: %.2f", avgPerDay)));
@@ -85,8 +79,6 @@ public class StatisticsFrame extends JFrame {
             try (PrintWriter pw = new PrintWriter(file, StandardCharsets.UTF_8)) {
                 pw.println("Kennzahl,Wert");
                 pw.println("Aktuelle Reservierungen," + reservations);
-                pw.println("Stornierungen gesamt," + cancels);
-                pw.println("Stornierungsrate," + String.format("%.1f%%", cancelRate));
                 pw.println("No-Shows gesamt," + noShows);
                 pw.println("No-Show-Rate," + String.format("%.1f%%", noShowRate));
                 pw.println(String.format("Ø Reservierungen/Tag,%.2f", avgPerDay));
